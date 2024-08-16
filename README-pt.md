@@ -8,14 +8,15 @@
 ## Descrição
 
 Você tem um template escrito em HTML e deseja convertê-lo para Blade, para usar em um projeto Laravel?
-Então este pacote é para você. Seu uso é simples, e o que você deseja é apenas o começo para iniciar seu novo projeto Laravel, a partir de um template HTML.
+Então este pacote é para você. Seu uso é simples.
+Após executar o comando `php artisan template:build`, você terá os seus ficheiros convertidos.
 
 ## Instalação
 
 Você pode instalar o pacote via composer:
 
 ```bash
-composer require lcloss/template
+composer require lcloss/template --save-dev
 ```
 
 ## Uso
@@ -25,7 +26,7 @@ composer require lcloss/template
 3. Se o template vier com a pasta `assets`, copie também a pasta `assets` para `/src`.
 4. Em seguida, execute o comando:
 ```bash
-php:build artisan template:build
+php artisan template:build
 ```
 5. O pacote criará a pasta `/resources/views/templates/dist` com os ficheiros convertidos.
 6. Ele também criará rotas para visualizar seu template.
