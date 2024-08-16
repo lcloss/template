@@ -1,5 +1,10 @@
 # Template Package
 
+## Other languages
+
+- [English](README.md)
+- [Português](README-pt.md)
+
 ## Description
 
 Do you have a template written in HTML and want to convert it to Blade, to use in a Laravel project?
@@ -59,3 +64,6 @@ Please see [CODE_OF_CONDUCT](CODE_OF_CONDUCT.md) for details.
 
 ## Testing
 
+No tests have been written, as it is only intended to convert files.
+For a next version, I will probably add the folder configuration via `.env`, so you can create tests.
+For now, we want something very simple.

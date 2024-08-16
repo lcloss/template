@@ -1,6 +1,6 @@
 # Contributing to Template Package
 
-Thank you for considering contributing to the Template package! The contribution guide is not ready yet, but you can check the [issues]()
+Thank you for considering contributing to the Template package! The contribution guide is not ready yet, but you can check the [issues](https://github.com/lcloss/template/issues)
 to see if there is something you can help with.
 
 ## Style Guide
@@ -14,16 +14,16 @@ instead of using the issue tracker.
 
 ## Issues
 
-If you discover a bug or have a feature request, please create an issue in the [issues section]()
+If you discover a bug or have a feature request, please create an issue in the [issues section](https://github.com/lcloss/template/issues)
 of this repository.
 
 ## Before opening an issue
 
-Before opening an issue, please search the [issues section]()
+Before opening an issue, please search the [issues section](https://github.com/lcloss/template/issues)
 
 ## Features
 
-If you have a feature request, please create an issue in the [issues section]()
+If you have a feature request, please create an issue in the [issues section](https://github.com/lcloss/template/issues)
 of this repository.
 
 ## Pull requests
