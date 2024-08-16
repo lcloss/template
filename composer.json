@@ -1,0 +1,27 @@
+{
+    "name": "lcloss/template",
+    "description": "Converts HTML template to Blade template",
+    "type": "package",
+    "license": "MIT",
+    "autoload": {
+        "psr-4": {
+            "Lcloss\\Template\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "lcloss",
+            "email": "lcloss@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {},
+    "extra": {
+        "laravel": {
+            "dont-discover": [],
+            "providers": [
+                "Lcloss\\Template\\TemplateServiceProvider"
+            ]
+        }
+    }
+}
