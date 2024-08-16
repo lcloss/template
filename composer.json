@@ -1,6 +1,6 @@
 {
     "name": "lcloss/template",
-    "description": "Converts HTML template to Blade template",
+    "description": "Converts HTML template to Blade template and use it on Laravel Project",
     "type": "package",
     "license": "MIT",
     "autoload": {
