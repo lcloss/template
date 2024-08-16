@@ -16,7 +16,7 @@ After running the `php artisan template:build` command, you will have your files
 You can install the package via composer:
 
 ```bash
-composer require lcloss/template --save-dev
+composer require lcloss/template --dev
 ```
 
 ## Usage
@@ -39,7 +39,7 @@ http://seu-projeto.test/template/home
 
 ## Credits
 
-- [Lucas Closs](lcloss @ github)
+- [Luciano Closs](lcloss @ github)
 - [All Contributors](../../contributors)
 
 ## License

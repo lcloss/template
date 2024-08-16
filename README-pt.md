@@ -16,7 +16,7 @@ Após executar o comando `php artisan template:build`, você terá os seus fiche
 Você pode instalar o pacote via composer:
 
 ```bash
-composer require lcloss/template --save-dev
+composer require lcloss/template --dev
 ```
 
 ## Uso
