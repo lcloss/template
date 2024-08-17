@@ -86,6 +86,7 @@ class BuildCommand extends Command
                 // Remove spaces, new lines and tabs
                 $literal = $matches[1][$i];
                 $literal = str_replace("\n", '', $literal);
+                $literal = str_replace("\r", '', $literal);
                 $literal = str_replace("\t", '', $literal);
                 $literal = trim($literal);
 
@@ -97,24 +98,23 @@ class BuildCommand extends Command
             }
         }
 
-        // Replaces <a href="X.html"> to <a href="{{ route('template', ['page' => 'X']) }}">
-        $source = preg_replace('/href="(.+?)\.html"/', 'href="{{ route(\'template.page\', [\'page\' => \'$1\']) }}"', $source);
-
-        // Replaces src="PATHTO/X" to src="{{ asset('PATHTO/X') }}"
+        /* Assets */
+        $assets_href = ['css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'ico', 'webp', 'woff', 'woff2', 'ttf', 'eot', 'otf'];
+        foreach($assets_href as $asset) {
+            $source = preg_replace('/href="(.+?)\.' . $asset . '"/', 'href="{{ asset(\'$1.' . $asset . '\') }}"', $source);
+        }
         $source = preg_replace('/src="(.+?)"/', 'src="{{ asset(\'$1\') }}"', $source);
 
-        // Replaces href="PATHTO/X.css" to href="{{ asset('PATHTO/X.css') }}"
-        $source = preg_replace('/href="(.+?)\.css"/', 'href="{{ asset(\'$1.css\') }}"', $source);
-
-        // Replaces src="PATHTO/X.js" to src="{{ asset('PATHTO/X.js') }}"
-        $source = preg_replace('/src="(.+?)\.js"/', 'src="{{ asset(\'$1.js\') }}"', $source);
+        /* Routes */
+        // Replaces <a href="X.html"> to <a href="{{ route('template', ['page' => 'X']) }}">
+        $source = preg_replace('/href="(.+?)\.html"/', 'href="{{ route(\'template.page\', [\'page\' => \'$1\']) }}"', $source);
 
         // Replaces url(PATHTO/X) to url({{ asset('PATHTO/X) }}"
         $source = preg_replace('/url\((.+?)\)/', 'url({{ asset(\'$1\') }})', $source);
 
         // Fix some incorrect blade syntax
         $source = str_replace('{{ asset(\'.\') }}', '#', $source);
-        $source = str_replace('{{ asset(\'/\') }}', '{{ route(\'template.page\', [\'page\' => \'index\']) }}', $source);
+        $source = str_replace('{{ asset(\'/\') }}', '{{ route(\'template\']) }}', $source);
 
         return $source;
     }
