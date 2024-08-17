@@ -77,11 +77,11 @@ class BuildCommand extends Command
     private function convertHtmlToBlade(string $source): string
     {
         // Create language keys for all content tags
-        $source = preg_replace('/placeholder="(.+?)"/', 'placeholder="{{ __(\'$1\') }}"', $source);
+        $source = preg_replace('/placeholder="([\w\s\-·,!]+)"/', 'placeholder="{{ __(\'$1\') }}"', $source);
 
         $content_tags = ['a', 'button', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'div', 'p'];
         foreach($content_tags as $tag) {
-            preg_match_all('/<' . $tag . '[^>]*>([\w\s\-·,!]+?)<\/' . $tag . '>/', $source, $matches);
+            preg_match_all('/<' . $tag . '[^>]*>([\w\s\-·,!]+)<\/' . $tag . '>/', $source, $matches);
             foreach( $matches[0] as $i => $match ) {
                 // Remove spaces, new lines and tabs
                 $literal = $matches[1][$i];
@@ -89,8 +89,10 @@ class BuildCommand extends Command
                 $literal = str_replace("\t", '', $literal);
                 $literal = trim($literal);
 
-                // Replace all ocurrences
-                $replacement = str_replace($matches[1][$i], '{{ __(\'' . $literal . '\') }}', $match);
+                // Replace all ocurrences, only for content tags
+                $replacement = str_replace('>'.$matches[1][$i].'<', '>{{ __(\'' . $literal . '\') }}<', $match);
+
+                // Replace again the replaced text into the source.
                 $source = str_replace($match, $replacement, $source);
             }
         }
