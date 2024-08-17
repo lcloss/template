@@ -104,7 +104,6 @@ class BuildCommand extends Command
         /* Assets */
         $assets_href = ['css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'ico', 'webp', 'woff', 'woff2', 'ttf', 'eot', 'otf'];
         foreach($assets_href as $asset) {
-            echo 'Replacing: /href="(.+?)\.' . $asset . '"/, by: href="{{ asset(\'.$1.' . $asset . '\') }}";' . PHP_EOL;
             $source = preg_replace('/href="('.$single_name_pattern.')\.' . $asset . '"/', 'href="{{ asset(\'$1.' . $asset . '\') }}"', $source);
         }
         $source = preg_replace('/src="('.$single_name_pattern.')"/', 'src="{{ asset(\'$1\') }}"', $source);
