@@ -77,6 +77,7 @@ class BuildCommand extends Command
     private function convertHtmlToBlade(string $source): string
     {
         $general_cotent_pattern = '[\w\s\-\.\/·,!&]+';
+        $single_name_pattern = '[\w\-\.\/\_]+';
 
         // Create language keys for all content tags
         $source = preg_replace('/placeholder="('.$general_cotent_pattern.')"/', 'placeholder="{{ __(\'$1\') }}"', $source);
@@ -103,16 +104,17 @@ class BuildCommand extends Command
         /* Assets */
         $assets_href = ['css', 'js', 'png', 'jpg', 'jpeg', 'gif', 'svg', 'ico', 'webp', 'woff', 'woff2', 'ttf', 'eot', 'otf'];
         foreach($assets_href as $asset) {
-            $source = preg_replace('/href="(.+?)\.' . $asset . '"/', 'href="{{ asset(\'$1.' . $asset . '\') }}"', $source);
+            echo 'Replacing: /href="(.+?)\.' . $asset . '"/, by: href="{{ asset(\'.$1.' . $asset . '\') }}";' . PHP_EOL;
+            $source = preg_replace('/href="('.$single_name_pattern.')\.' . $asset . '"/', 'href="{{ asset(\'$1.' . $asset . '\') }}"', $source);
         }
-        $source = preg_replace('/src="(.+?)"/', 'src="{{ asset(\'$1\') }}"', $source);
+        $source = preg_replace('/src="('.$single_name_pattern.')"/', 'src="{{ asset(\'$1\') }}"', $source);
 
         /* Routes */
         // Replaces <a href="X.html"> to <a href="{{ route('template', ['page' => 'X']) }}">
-        $source = preg_replace('/href="(.+?)\.html"/', 'href="{{ route(\'template.page\', [\'page\' => \'$1\']) }}"', $source);
+        $source = preg_replace('/href="('.$single_name_pattern.')\.html"/', 'href="{{ route(\'template.page\', [\'page\' => \'$1\']) }}"', $source);
 
         // Replaces url(PATHTO/X) to url({{ asset('PATHTO/X) }}"
-        $source = preg_replace('/url\((.+?)\)/', 'url({{ asset(\'$1\') }})', $source);
+        $source = preg_replace('/url\(('.$single_name_pattern.')\)/', 'url({{ asset(\'$1\') }})', $source);
 
         // Fix some incorrect blade syntax
         $source = str_replace('{{ asset(\'.\') }}', '#', $source);
