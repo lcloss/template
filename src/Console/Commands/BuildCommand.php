@@ -66,8 +66,8 @@ class BuildCommand extends Command
             if (File::exists($sourcePath)) {
                 File::copyDirectory($sourcePath, $destinationPath);
                 $this->info('A pasta ' . $asset_folder . ' foi copiada com sucesso para public/assets!');
-            } else {
-                $this->error('A pasta source /resources/views/template/src/' . $asset_folder . ' não existe.');
+//            } else {
+//                $this->error('A pasta source /resources/views/template/src/' . $asset_folder . ' não existe.');
             }
         }
 
@@ -76,12 +76,14 @@ class BuildCommand extends Command
 
     private function convertHtmlToBlade(string $source): string
     {
-        // Create language keys for all content tags
-        $source = preg_replace('/placeholder="([\w\s\-·,!]+)"/', 'placeholder="{{ __(\'$1\') }}"', $source);
+        $general_cotent_pattern = '[\w\s\-\.\/·,!&]+';
 
-        $content_tags = ['a', 'button', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'div', 'p'];
+        // Create language keys for all content tags
+        $source = preg_replace('/placeholder="('.$general_cotent_pattern.')"/', 'placeholder="{{ __(\'$1\') }}"', $source);
+
+        $content_tags = ['a', 'button', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'span', 'div', 'p', 'option', 'li', 'label'];
         foreach($content_tags as $tag) {
-            preg_match_all('/<' . $tag . '[^>]*>([\w\s\-·,!]+)<\/' . $tag . '>/', $source, $matches);
+            preg_match_all('/<' . $tag . '[^>]*>('.$general_cotent_pattern.')<\/' . $tag . '>/', $source, $matches);
             foreach( $matches[0] as $i => $match ) {
                 // Remove spaces, new lines and tabs
                 $literal = $matches[1][$i];
