@@ -30,21 +30,40 @@ class BuildCommand extends Command
             return;
         }
 
-        // Check if /resources/views/template/dist directory exists
-        if (is_dir(resource_path('views/template/dist'))) {
-            // Remove the directory
-            $this->info('Removing the /resources/views/template/dist directory...');
-            File::deleteDirectory(resource_path('views/template/dist'));
+        // Read all html files from /resources/views/template/src directory
+        $this->processDirectory(resource_path('views/template/src'));
+
+        $this->info('Template built successfully!');
+    }
+
+    private function processDirectory(string $path): void
+    {
+        $base_template_folder = resource_path('views/template/src');
+        $current_directory = str_replace($base_template_folder, '', $path);
+
+        // Check target directory
+        if (!empty($current_directory) and $current_directory !== '/') {
+            $target_directory = resource_path('views/template/dist') . $current_directory;
+        } else {
+            $target_directory = resource_path('views/template/dist');
         }
 
-        // Create the /resources/views/template/dist directory
-        $this->info('Creating the /resources/views/template/dist directory...');
-        mkdir(resource_path('views/template/dist'));
+        // Check if target directory exists and if so, remove it
+        if (is_dir($target_directory)) {
+            // Remove the directory
+            $this->info('Removing the ' . $target_directory . ' directory...');
+            File::deleteDirectory($target_directory);
+        }
 
-        // Read all html files from /resources/views/template/src directory
-        $files = glob(resource_path('views/template/src/*.html'));
+        // Create the target directory
+        $this->info('Creating the ' . $target_directory . ' directory...');
+        mkdir($target_directory);
 
-        // Loop through all files and copy them as .blade.php file to /resources/views/template/dist directory
+        $target_directory .= '/';
+
+        $files = glob($path . '/*.html');
+
+        // Loop through all files and copy them as .blade.php file to target directory
         foreach ($files as $file) {
             $filename = pathinfo($file, PATHINFO_FILENAME);
             $this->info('Copying ' . $filename . '...');
@@ -52,32 +71,42 @@ class BuildCommand extends Command
             $source = file_get_contents($file);
             $target = $this->convertHtmlToBlade($source);
 
-            file_put_contents(resource_path('views/template/dist/' . $filename . '.blade.php'), $target);
+
+            file_put_contents($target_directory . $filename . '.blade.php', $target);
         }
 
-        // Caminho de origem e destino para a cópia dos arquivos
-
-        // Copiar a pasta /resources/views/templates/src/assets para /public/assets
         $asset_folders = ['assets', 'css', 'js', 'img', 'vendor', 'scss'];
-        foreach($asset_folders as $asset_folder) {
-            $sourcePath = resource_path('views/template/src/' . $asset_folder);
-            $destinationPath = public_path($asset_folder);
 
-            if (File::exists($sourcePath)) {
+        // Copy assets or process subdirectories
+
+        // Read all directories from the current directory
+        $directories = glob($path . '/*', GLOB_ONLYDIR);
+        foreach($directories as $directory) {
+            // Get the directory name
+            $directoryName = pathinfo($directory, PATHINFO_BASENAME);
+
+            // Check if the directory is an asset folder
+            if (in_array($directoryName, $asset_folders)) {
+                // Copy the asset folder to the public directory
+                $sourcePath = $directory;
+                $destinationPath = public_path(str_replace($base_template_folder . '/', '', $directory));
+
                 File::copyDirectory($sourcePath, $destinationPath);
-                $this->info('A pasta ' . $asset_folder . ' foi copiada com sucesso para public/assets!');
-//            } else {
-//                $this->error('A pasta source /resources/views/template/src/' . $asset_folder . ' não existe.');
+                $this->info('The ' . $directoryName . ' folder was successfully copied to public/' . $directoryName . '!');
+            } else {
+                $this->processDirectory($directory);
             }
         }
-
-        $this->info('Template built successfully!');
     }
 
     private function convertHtmlToBlade(string $source): string
     {
         $general_cotent_pattern = '[\w\s\-\.\/·,!&]+';
         $single_name_pattern = '[\w\-\.\/\_]+';
+
+        // Convert relative paths to absolute paths
+        $source = str_replace('href="./', 'href="/', $source);
+        $source = str_replace('src="./', 'src="/', $source);
 
         // Create language keys for all content tags
         $source = preg_replace('/placeholder="('.$general_cotent_pattern.')"/', 'placeholder="{{ __(\'$1\') }}"', $source);
@@ -110,6 +139,7 @@ class BuildCommand extends Command
 
         /* Routes */
         // Replaces <a href="X.html"> to <a href="{{ route('template', ['page' => 'X']) }}">
+        // TODO: Check if is need to replace P/D/X.html to P.D.X in the route
         $source = preg_replace('/href="('.$single_name_pattern.')\.html"/', 'href="{{ route(\'template.page\', [\'page\' => \'$1\']) }}"', $source);
 
         // Replaces url(PATHTO/X) to url({{ asset('PATHTO/X) }}"
